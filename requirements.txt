@@ -1,2 +1,4 @@
 discord.py
+spotipy
+yt-dlp
 python-dotenv
