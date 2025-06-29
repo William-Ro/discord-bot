@@ -17,6 +17,8 @@ intents.members = True
 
 bot = commands.Bot(command_prefix = '!', intents= intents)
 
+secret_role = "Gamer"
+
 @bot.event
 async def on_ready():
   print(f"We are ready to go in, {bot.user.name}")
@@ -39,6 +41,27 @@ async def on_message(message):
 @bot.command()
 async def hello(ctx):
   await ctx.send(f"Hello {ctx.author.mention}!")
+
+
+@bot.command()
+async def assign(ctx):
+  role = discord.utils.get(ctx.guild.roles, name = secret_role)
+
+  if role: 
+    await ctx.author.add_roles(role)
+    await ctx.send(f"{ctx.author.mention} is now assigned to {secret_role}")
+  else:
+    await ctx.send("Role does't exist")
+
+@bot.command()
+async def remove(ctx):
+  role = discord.utils.get(ctx.guild.roles, name = secret_role)
+
+  if role: 
+    await ctx.author.remove_roles(role)
+    await ctx.send(f"{ctx.author.mention} is now removed from {secret_role}")
+  else:
+    await ctx.send("Role does't exist")
 
 
 bot.run(token, log_handler= handler, log_level = logging.DEBUG)
