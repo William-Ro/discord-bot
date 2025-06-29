@@ -1,26 +1,37 @@
 {
   description = "Dev Shell for Python Development";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
 
   outputs = {
     self,
     nixpkgs,
-  }: let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {inherit system;};
-
-    pythonEnv = pkgs.python312.withPackages (ps: with ps; [pip]);
+    ...
+  } @ inputs: let
+    supportedSystems = ["x86_64-linux" "aarch64-darwin"];
+    forEachSystem = f:
+      builtins.listToAttrs (map (system: {
+          name = system;
+          value = f system;
+        })
+        supportedSystems);
   in {
-    devShells.${system}.default = pkgs.mkShell {
-      buildInputs = [
-        pythonEnv
-        pkgs.virtualenv
-      ];
+    devShells = forEachSystem (system: let
+      pkgs = import nixpkgs {inherit system;};
+    in {
+      default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.python312
+          pkgs.virtualenv
+          pkgs.alejandra
+        ];
 
-      shellHook = ''
-        echo "Welcome to the Python Development Shell"
-      '';
-    };
+        shellHook = ''
+          echo "Welcome to Python Dev Shell on ${system}"
+        '';
+      };
+    });
   };
 }
