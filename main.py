@@ -64,6 +64,23 @@ async def remove(ctx):
     await ctx.send("Role does't exist")
 
 @bot.command()
+async def dm(ctx, *, msg):
+  await ctx.author.send(f"You said {msg}")
+
+@bot.command()
+async def reply(ctx):
+  await ctx.reply("This is a reply to your message!")
+
+@bot.command()
+async def poll(ctx, *, question):
+  embed = discord.Embed(title="New Poll", description=question)
+  poll_message = await ctx.send(embed = embed)
+  await poll_message.add_reaction("☠️")
+  await poll_message.add_reaction("🤡")
+  
+
+
+@bot.command()
 @commands.has_role(secret_role)
 async def secret(ctx):
   await ctx.send("Welcome to the secret channel!")
