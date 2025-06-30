@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 import logging
+import webserver
 from dotenv import load_dotenv
 import os
+
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -77,7 +79,7 @@ async def poll(ctx, *, question):
   poll_message = await ctx.send(embed = embed)
   await poll_message.add_reaction("☠️")
   await poll_message.add_reaction("🤡")
-  
+
 
 
 @bot.command()
@@ -92,4 +94,5 @@ async def secret_error(ctx,error):
     await ctx.send("You don't have permission to use this command!")
 
 
+webserver.keep_alive()
 bot.run(token, log_handler= handler, log_level = logging.DEBUG)
